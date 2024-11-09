@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { client } from "@/components/client";
-import ViewExchanges from "../Exchanges/viewexchanges"
+import ViewExchanges from "@/components/exchanges/viewexchanges"
 import TokenOutput from "../TokenOutput"
 import { executePancakeSwap } from "../pancakeswap/pancakeswap"
 import { Button } from "../ui/button"
