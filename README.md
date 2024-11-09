@@ -3,8 +3,8 @@
 ## Todo: 
 
 1. PancakeSwap V3 , Uniswap V3 , SushiSwap V3
-2. 1inch maybe ?
-3. Wormhole Bridge ?
+2. 1inch done
+3. squid router done
 
 # Objectives: 
 

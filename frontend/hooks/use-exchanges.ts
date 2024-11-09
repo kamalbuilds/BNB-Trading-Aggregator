@@ -64,7 +64,7 @@ export function useExchanges(fromTokenName: string, toTokenName: string) {
           const ethersSigner = await ethers6Adapter.signer.toEthers({
             client,
             chain: activeWalletChain!,
-            account: activeAccount,
+            account: activeAccount!,
           });
 
           const router = new ethers.Contract(
@@ -142,7 +142,7 @@ export function useExchanges(fromTokenName: string, toTokenName: string) {
               const quoter = new ethers.Contract(
                 e.quoter.address,
                 e.quoter.abi.abi,
-                signer
+                ethersSigner
               )
               console.log("Quoter:", quoter)
 

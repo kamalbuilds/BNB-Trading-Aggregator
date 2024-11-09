@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { uint8ArrayToHex } from "@1inch/byte-utils"
 import { HashLock, PresetEnum, SDK } from "@1inch/cross-chain-sdk"
-import { randomBytes } from "ethers/lib/utils";
+import { randomBytes } from "crypto";
 
 
 function getRandomBytes32(): string {

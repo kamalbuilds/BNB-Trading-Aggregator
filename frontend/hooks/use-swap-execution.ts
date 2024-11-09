@@ -23,7 +23,7 @@ export function useSwapExecution() {
       if (!window.ethereum || !web3Data?.account) throw new Error("No provider")
 
       const provider = new ethers.BrowserProvider(window.ethereum)
-      const signer = provider.getSigner()
+      const signer = await provider.getSigner()
       
       const _tokenIn = tokens[currentNet][fromToken]["address"]
       const _tokenOut = tokens[currentNet][toToken]["address"]
@@ -32,6 +32,7 @@ export function useSwapExecution() {
       const amount_in = ethers.parseEther(amountIn)
       const amount_out_min = ethers.parseEther(amountOutMin)
 
+      
       // Approve token
       const erc20Contract = new ethers.Contract(_tokenIn, ERC20.abi, signer)
       const approve_tx = await erc20Contract.approve(exchange.address, amount_in)
@@ -40,7 +41,8 @@ export function useSwapExecution() {
       const timestamp = Math.floor(Date.now() / 1000) + 15
 
       if (exchange.name !== "Uniswap V3") {
-        const router = new ethers.Contract(exchange.address, IRouter.abi, signer)
+        const router = new ethers.Contract(exchange.address, IRouter.abi, signer);
+        console.log(router, "router")
         const tx = await router.swapExactTokensForTokens(
           amount_in,
           amount_out_min,
