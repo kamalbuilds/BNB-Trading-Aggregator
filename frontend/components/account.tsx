@@ -14,6 +14,8 @@ import { client } from "@/components/client";
 
 import { ConnectButton } from "thirdweb/react";
 import { bsc, mainnet, sepolia } from 'thirdweb/chains'
+import { greenfieldTestnet } from "@/utils/chain.utils"
+import WalletConnect from "./WalletConnect"
 
 export function Account() {
   const { web3Data, connect, disconnect } = useWeb3()
@@ -61,16 +63,7 @@ export function Account() {
           </Dialog>
         </>
       ) : (
-        <ConnectButton client={client} chains={[bsc, mainnet]}
-        // accountAbstraction={{
-        //   chain: bsc,
-        //   sponsorGas: false,
-        //   overrides: {
-        //     bundlerUrl: 'https://bundler.biconomy.io/api/v2/56/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44',
-
-        //   }
-        // }} 
-        />
+        <WalletConnect />
       )}
     </div>
   )

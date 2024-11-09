@@ -28,8 +28,9 @@ import { hexToBigInt } from "viem"
 import { useActiveAccount } from "thirdweb/react"
 import { executePancakeSwap } from "@/components/pancakeswap/pancakeswap"
 import { usePancakeswapLiquidity } from "@/hooks/use-pancakeswap-liquidity"
+import { checkIfBucketExists, handleCreateGreenFieldBucket, handleCreateGreenFieldObject } from "@/helpers/greenFieldFunc"
 
-const defiActions = ["Swap", "Add Liquidity", "Remove Liquidity" , "1inch Cross Chain Swap" , "Squid Router"]
+const defiActions = ["Swap", "Add Liquidity", "Remove Liquidity", "1inch Cross Chain Swap", "Squid Router"]
 
 const BlockContext = createContext<
   | {
@@ -246,11 +247,53 @@ export default function BatchComponent() {
   }
 
   console.log("active account", activeAccount);
+  const [strategyName, setStrategyName] = useState('')
+
+  const handleSaveStrategy = async () => {
+    if (!activeAccount || strategyName) return;
+
+    const isBucketAvailable = await checkIfBucketExists({
+      bucketName: activeAccount.address.toLowerCase()
+    })
+
+    console.log("isBucketAvailable", isBucketAvailable);
+
+    const strategyData = [...blocks]
+    console.log("save strategy", strategyData);
+
+    if (!isBucketAvailable) {
+      const bucketCreated = await handleCreateGreenFieldBucket({
+        address: activeAccount.address,
+        bucketName: activeAccount.address,
+        activeAccount,
+      })
+
+      console.log("bucketCreated", bucketCreated);
+    }
+
+    const jsonString = JSON.stringify(strategyData);
+    const jsonBlob = new Blob([jsonString], { type: "application/json" });
+
+    const timestamp = new Date().getTime();
+    console.log("Date", timestamp)
+
+    const jsonFile = new File([jsonBlob], `${strategyName}-${timestamp}.json`, { type: "application/json" });
+
+    const strategyCreated = await handleCreateGreenFieldObject({
+      address: activeAccount.address,
+      bucketName: activeAccount.address,
+      jsonFile: jsonFile,
+      strategyName: strategyName
+    })
+
+    console.log("strategyCreated", strategyCreated);
+
+  }
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="mb-4 text-2xl font-bold">DeFi Strategy Builder</h1>
-      <div className="my-4 space-x-4">
+      <div className="my-4 flex flex-row gap-2 space-x-4">
         <Button onClick={addBlock}>
           <Plus className="mr-2 size-4" />
           Add Block
@@ -263,6 +306,16 @@ export default function BatchComponent() {
         <Button onClick={executeStrategy} disabled={blocks.length === 0}>
           Execute Strategy
         </Button>
+
+        <div className="flex flex-row gap-4">
+          <Input type="text" placeholder="Enter Strategy name" onChange={(e) => {
+            setStrategyName(e.target.value)
+          }} />
+          <Button onClick={handleSaveStrategy} disabled={blocks.length === 0}>
+            Save Strategy
+          </Button>
+
+        </div>
       </div>
       <div className="relative">
         <div
