@@ -24,6 +24,7 @@ export const handleCreateGreenFieldBucket = async ({
         account: activeAccount,
     });
 
+    //TODO issue to be fixed
     const ethersprovider = await ethers6Adapter.provider.toEthers({
         chain: bsc,
         client: client
@@ -31,11 +32,11 @@ export const handleCreateGreenFieldBucket = async ({
     // const provider = new ethers.BrowserProvider(window.ethereum)
     // const signer = await provider.getSigner();
     console.log("Provider rpc", ethersprovider);
-    // const offChainData = await getOffchainAuthKeys(address, ethersprovider);
-    // if (!offChainData) {
-    //     alert('No offchain, please create offchain pairs first');
-    //     return;
-    // }
+                const offChainData = await getOffchainAuthKeys(address, ethersprovider);
+                if (!offChainData) {
+                    alert('No offchain, please create offchain pairs first');
+                    return;
+                }
 
     try {
         const createBucketTx = await greenFieldClient.bucket.createBucket(
@@ -48,6 +49,8 @@ export const handleCreateGreenFieldBucket = async ({
                 paymentAddress: address,
             },
         );
+
+        console.log("createBucketTx", createBucketTx)
 
         const simulateInfo = await createBucketTx.simulate({
             denom: 'BNB',

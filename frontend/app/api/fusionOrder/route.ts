@@ -39,10 +39,11 @@ export async function POST(req: NextRequest) {
 
     // const pvtkey = new PrivateKeyProviderConnector(makerPrivateKey, client);
 
+    
 
     const sdk = new SDK({
       url: "https://api.1inch.dev/fusion-plus",
-      authKey: 'okz7YzxXA8DPc7eehhXbolnROttzvKYA',
+      authKey: process.env.ONE_INCH,
       blockchainProvider: pvd,
     });
 
