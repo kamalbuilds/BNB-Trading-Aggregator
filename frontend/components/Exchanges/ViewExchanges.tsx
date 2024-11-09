@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import Spinner from "../Spinner"
 
 const ViewExchanges = ({
   fromToken,
@@ -24,24 +25,34 @@ const ViewExchanges = ({
   console.log("Exchanges>>>", exchanges)
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Exchange</TableHead>
-          <TableHead>Price</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {exchanges?.map((exchange, index) => (
-          <TableRow key={index}>
-            <TableCell>{exchange.exchange}</TableCell>
-            <TableCell>
-              {exchange.price !== 0 ? exchange.price.toFixed(8) : "N/A"}
-            </TableCell>
+    <div className="min-h-20">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Exchange</TableHead>
+            <TableHead>Price</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {isLoading ? (
+            <>
+              <Spinner />
+            </>
+          ) : (
+            <>
+              {exchanges?.map((exchange, index) => (
+                <TableRow key={index}>
+                  <TableCell>{exchange.exchange}</TableCell>
+                  <TableCell>
+                    {exchange.price !== 0 ? exchange.price.toFixed(8) : "N/A"}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   )
 }
 

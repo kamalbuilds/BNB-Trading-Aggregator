@@ -2,7 +2,7 @@
 
 import { createContext, useEffect, useMemo, useState } from "react"
 import { ChevronLeft, ChevronRight, Minus, Plus, Trash2 } from "lucide-react"
-import { useActiveWalletChain } from "thirdweb/react"
+import { useActiveWallet, useActiveWalletChain } from "thirdweb/react"
 
 import { BlockType } from "@/types/nav"
 import { tokens } from "@/config/tokens"
@@ -29,6 +29,8 @@ import { useActiveAccount } from "thirdweb/react"
 import { executePancakeSwap } from "@/components/pancakeswap/pancakeswap"
 import { usePancakeswapLiquidity } from "@/hooks/use-pancakeswap-liquidity"
 import { checkIfBucketExists, handleCreateGreenFieldBucket, handleCreateGreenFieldObject } from "@/helpers/greenFieldFunc"
+import { greenfieldTestnet } from "@/utils/chain.utils"
+import Spinner from "@/components/Spinner"
 
 const defiActions = ["Swap", "Add Liquidity", "Remove Liquidity", "1inch Cross Chain Swap", "Squid Router"]
 
@@ -46,6 +48,8 @@ export default function BatchComponent() {
 
   const activeWalletChain = useActiveWalletChain()
   const chainId = activeWalletChain?.id
+
+  const wallet = useActiveWallet();
 
   const currentNet = useMemo(() => {
     switch (chainId) {
@@ -249,45 +253,58 @@ export default function BatchComponent() {
   console.log("active account", activeAccount);
   const [strategyName, setStrategyName] = useState('')
 
+  const [savingStrategy, setSavingStrategy] = useState(false);
   const handleSaveStrategy = async () => {
-    if (!activeAccount || strategyName) return;
+    if (!activeAccount || strategyName || !wallet) return;
 
-    const isBucketAvailable = await checkIfBucketExists({
-      bucketName: activeAccount.address.toLowerCase()
-    })
+    setSavingStrategy(true);
+    try {
+      if (chainId !== greenfieldTestnet.id) {
+        await wallet.switchChain(greenfieldTestnet)
+      }
 
-    console.log("isBucketAvailable", isBucketAvailable);
-
-    const strategyData = [...blocks]
-    console.log("save strategy", strategyData);
-
-    if (!isBucketAvailable) {
-      const bucketCreated = await handleCreateGreenFieldBucket({
-        address: activeAccount.address,
-        bucketName: activeAccount.address,
-        activeAccount,
+      const isBucketAvailable = await checkIfBucketExists({
+        bucketName: activeAccount.address.toLowerCase()
       })
 
-      console.log("bucketCreated", bucketCreated);
+      console.log("isBucketAvailable", isBucketAvailable);
+
+      const strategyData = [...blocks]
+      console.log("save strategy", strategyData);
+
+      if (!isBucketAvailable) {
+        const bucketCreated = await handleCreateGreenFieldBucket({
+          address: activeAccount.address,
+          bucketName: activeAccount.address,
+          activeAccount,
+        })
+
+        console.log("bucketCreated", bucketCreated);
+      }
+
+      const jsonString = JSON.stringify(strategyData);
+      const jsonBlob = new Blob([jsonString], { type: "application/json" });
+
+      const timestamp = new Date().getTime();
+      console.log("Date", timestamp)
+
+      const jsonFile = new File([jsonBlob], `${strategyName}-${timestamp}.json`, { type: "application/json" });
+
+      const strategyCreated = await handleCreateGreenFieldObject({
+        address: activeAccount.address,
+        bucketName: activeAccount.address,
+        jsonFile: jsonFile,
+        strategyName: strategyName
+      })
+
+      setSavingStrategy(false)
+      setBlocks([])
+      console.log("strategyCreated", strategyCreated);
+
+    } catch (error) {
+      console.log("Error in saving strategy", error)
+      setSavingStrategy(false)
     }
-
-    const jsonString = JSON.stringify(strategyData);
-    const jsonBlob = new Blob([jsonString], { type: "application/json" });
-
-    const timestamp = new Date().getTime();
-    console.log("Date", timestamp)
-
-    const jsonFile = new File([jsonBlob], `${strategyName}-${timestamp}.json`, { type: "application/json" });
-
-    const strategyCreated = await handleCreateGreenFieldObject({
-      address: activeAccount.address,
-      bucketName: activeAccount.address,
-      jsonFile: jsonFile,
-      strategyName: strategyName
-    })
-
-    console.log("strategyCreated", strategyCreated);
-
   }
 
   return (
@@ -323,43 +340,51 @@ export default function BatchComponent() {
           className="scrollbar-hide flex space-x-4 overflow-x-auto pb-4"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {blocks.map((block) => (
-            <Card key={block.id} className="w-96 max-w-md shrink-0">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Block {block.id}</CardTitle>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => deleteBlock(block.id)}
-                >
-                  <Trash2 className="mr-2 size-4" />
-                  Delete
-                </Button>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Select
-                  value={block.action}
-                  onValueChange={(value) => updateBlockAction(block.id, value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a DeFi action" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {defiActions.map((action) => (
-                      <SelectItem key={action} value={action}>
-                        {action}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <BlockComponent
-                  block={block}
-                  updateBlockField={updateBlockField}
-                  setBlocks={setBlocks}
-                />
-              </CardContent>
-            </Card>
-          ))}
+          {savingStrategy ? (
+            <>
+              <Spinner />
+            </>
+          ) : (
+            <>
+              {blocks.map((block) => (
+                <Card key={block.id} className="w-96 max-w-md shrink-0">
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <CardTitle>Block {block.id}</CardTitle>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => deleteBlock(block.id)}
+                    >
+                      <Trash2 className="mr-2 size-4" />
+                      Delete
+                    </Button>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Select
+                      value={block.action}
+                      onValueChange={(value) => updateBlockAction(block.id, value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a DeFi action" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {defiActions.map((action) => (
+                          <SelectItem key={action} value={action}>
+                            {action}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <BlockComponent
+                      block={block}
+                      updateBlockField={updateBlockField}
+                      setBlocks={setBlocks}
+                    />
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          )}
         </div>
       </div>
     </div>
