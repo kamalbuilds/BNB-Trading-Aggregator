@@ -1,179 +1,243 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import * as React from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Zap, Shuffle, Shield, PanelTop } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowRight, Moon, Sun, Menu, Wallet, Repeat, Box, BarChart2, Shield, ChevronDown, Share, Twitter, Github } from 'lucide-react'
+import { useTheme } from 'next-themes'
+
+import { Button } from '@/components/ui/button'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Card, CardContent } from '@/components/ui/card'
+import Link from 'next/link'
+import { Protocols } from '@/config/protocols'
+import Image from 'next/image'
+
+const FloatingOrb = ({ className }: { className?: string }) => (
+    <motion.div
+        className={`absolute rounded-full opacity-20 blur-3xl ${className}`}
+        animate={{
+            y: ['0%', '100%', '0%'],
+            scale: [1, 1.2, 1],
+        }}
+        transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: 'easeInOut',
+        }}
+    />
+)
 
 export const HomeScreen = () => {
-    const [isVisible, setIsVisible] = useState(false)
-
-    useEffect(() => {
-        setIsVisible(true)
-    }, [])
-
-    const fadeIn = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 }
-    }
+    const { setTheme } = useTheme()
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-            <header className="container mx-auto px-4 py-8">
-                <nav className="flex justify-between items-center">
-                    <h1 className="text-2xl font-bold">CrossChain DEX</h1>
-                    <Button variant="outline">Launch App</Button>
-                </nav>
-            </header>
+        <div className="from-background to-background relative min-h-screen overflow-hidden bg-gradient-to-br">
+            {/* Background Orbs */}
+            <FloatingOrb className="-left-48 -top-48 size-96 bg-purple-400 dark:bg-purple-600" />
+            <FloatingOrb className="-right-48 top-1/4 size-96 bg-blue-400 dark:bg-blue-600" />
+            <FloatingOrb className="-left-48 bottom-1/4 size-96 bg-emerald-400 dark:bg-emerald-600" />
 
-            <main className="container mx-auto px-4">
-                <motion.section
-                    className="text-center py-20"
-                    initial="hidden"
-                    animate={isVisible ? "visible" : "hidden"}
-                    variants={fadeIn}
-                    transition={{ duration: 0.5 }}
-                >
-                    <h2 className="text-5xl font-bold mb-6">Simplify Your Cross-Chain Trading</h2>
-                    <p className="text-xl mb-8 max-w-2xl mx-auto">
-                        One-click bridging and trading across multiple chains. Get the best prices, lowest fees, and enhanced security.
-                    </p>
-                    <Button size="lg" className="mr-4">
-                        Start Trading
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                    <Button size="lg" variant="outline">
-                        Learn More
-                    </Button>
-                </motion.section>
+            <main className="relative">
+                <section className="container px-4 py-32 md:py-48">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="mx-auto max-w-[800px] text-center"
+                    >
+                        <h1 className="text-4xl font-bold tracking-tight md:text-[6rem]">
+                            <span className="animate-pulse bg-gradient-to-r from-purple-400 to-blue-600 bg-clip-text text-transparent"> TradeX</span>
+                        </h1>
+                        <div className='my-12 flex flex-col gap-1'>
+                            <p className="text-muted-foreground mx-auto max-w-[600px]  text-xl md:text-2xl">
+                                CrossChain DEX Aggregator & Strategy Builder
+                            </p>
+                            <p className="text-muted-foreground mx-auto max-w-[600px] text-xl md:text-2xl">
+                                Building, Executing, and Sharing Cross-Chain Trading Strategies Made Simple
+                            </p>
+                        </div>
+                        <div className="flex justify-center gap-4">
+                            <Link href='/batch'>
+                                <Button size="lg" className="gap-2">
+                                    Start Trading <ArrowRight className="size-4" />
+                                </Button>
+                            </Link>
+                            <Link href='https://t.me/kamalthedev' target='_blank'>
+                                <Button size="lg" variant="outline">
+                                    Contact Us
+                                </Button>
+                            </Link>
+                        </div>
+                    </motion.div>
+                </section>
 
-                <motion.section
-                    className="py-20"
-                    initial="hidden"
-                    animate={isVisible ? "visible" : "hidden"}
-                    variants={fadeIn}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                >
-                    <h3 className="text-3xl font-bold mb-12 text-center">Key Features</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <FeatureCard
-                            icon={<Zap className="h-12 w-12 mb-4" />}
-                            title="Best Prices"
-                            description="Aggregate liquidity from multiple DEXs to ensure you always get the best prices."
-                        />
-                        <FeatureCard
-                            icon={<Shuffle className="h-12 w-12 mb-4" />}
-                            title="Cross-Chain Liquidity"
-                            description="Seamlessly trade assets across different blockchains with optimal prices and user experience."
-                        />
-                        <FeatureCard
-                            icon={<Shield className="h-12 w-12 mb-4" />}
-                            title="MEV Protection"
-                            description="Enhanced security measures to protect your trades from MEV attacks."
-                        />
+                <section className="container px-4 py-24">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        viewport={{ once: true }}
+                        className="mx-auto mb-16 max-w-[800px] text-center"
+                    >
+                        <h2 className="mb-6 text-3xl font-bold md:text-4xl">Features</h2>
+                        <p className="text-muted-foreground text-xl">
+                            List of Features that our dapp provides over other competitiors.
+                        </p>
+                    </motion.div>
+                    <div className="grid gap-8 md:grid-cols-2">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                            viewport={{ once: true }}
+                        >
+                            <Card className="group relative overflow-hidden">
+                                <CardContent className="p-6">
+                                    <div className="bg-primary/10 mb-4 w-fit rounded-lg p-3">
+                                        <Repeat className="text-primary size-6" />
+                                    </div>
+                                    <h3 className="mb-2 text-xl font-semibold">Cross-Chain Swaps</h3>
+                                    <p className="text-muted-foreground">
+                                        Seamlessly trade assets across multiple blockchains with optimal routing and MEV protection.
+                                    </p>
+                                </CardContent>
+                                <div className="from-primary/10 to-primary/5 absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity group-hover:opacity-100" />
+                            </Card>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                            viewport={{ once: true }}
+                        >
+                            <Card className="group relative overflow-hidden">
+                                <CardContent className="p-6">
+                                    <div className="bg-primary/10 mb-4 w-fit rounded-lg p-3">
+                                        <Box className="text-primary size-6" />
+                                    </div>
+                                    <h3 className="mb-2 text-xl font-semibold">Strategy Builder</h3>
+                                    <p className="text-muted-foreground">
+                                        Create and share custom trading strategies with our visual block-based builder. Execute transactions using smart account in one click
+                                    </p>
+                                </CardContent>
+                                <div className="from-primary/10 to-primary/5 absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity group-hover:opacity-100" />
+                            </Card>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                            viewport={{ once: true }}
+                        >
+                            <Card className="group relative overflow-hidden">
+                                <CardContent className="p-6">
+                                    <div className="bg-primary/10 mb-4 w-fit rounded-lg p-3">
+                                        <Shield className="text-primary size-6" />
+                                    </div>
+                                    <h3 className="mb-2 text-xl font-semibold">Security First</h3>
+                                    <p className="text-muted-foreground">
+                                        Built-in MEV protection and secure cross-chain transaction handling.
+                                    </p>
+                                </CardContent>
+                                <div className="from-primary/10 to-primary/5 absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity group-hover:opacity-100" />
+                            </Card>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.4 }}
+                            viewport={{ once: true }}
+                        >
+                            <Card className="group relative overflow-hidden">
+                                <CardContent className="p-6">
+                                    <div className="bg-primary/10 mb-4 w-fit rounded-lg p-3">
+                                        <Share className="text-primary size-6" />
+                                    </div>
+                                    <h3 className="mb-2 text-xl font-semibold">Save and Share</h3>
+                                    <p className="text-muted-foreground">
+                                        Save Your strategy using GreenField and share it with your community
+                                    </p>
+                                </CardContent>
+                                <div className="from-primary/10 to-primary/5 absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity group-hover:opacity-100" />
+                            </Card>
+                        </motion.div>
                     </div>
-                </motion.section>
+                </section>
 
-                <motion.section
-                    className="py-20"
-                    initial="hidden"
-                    animate={isVisible ? "visible" : "hidden"}
-                    variants={fadeIn}
-                    transition={{ duration: 0.5, delay: 0.4 }}
-                >
-                    <h3 className="text-3xl font-bold mb-12 text-center">How It Works</h3>
-                    <div className="flex flex-col md:flex-row justify-center items-center gap-8">
-                        <Card className="w-full md:w-1/3">
-                            <CardHeader>
-                                <CardTitle>1. Connect Wallet</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                Link your wallet to access your assets across multiple chains.
-                            </CardContent>
-                        </Card>
-                        <Card className="w-full md:w-1/3">
-                            <CardHeader>
-                                <CardTitle>2. Select Trade</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                Choose the assets you want to trade and the amount.
-                            </CardContent>
-                        </Card>
-                        <Card className="w-full md:w-1/3">
-                            <CardHeader>
-                                <CardTitle>3. Confirm & Swap</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                Review the best route and confirm your trade with one click.
-                            </CardContent>
-                        </Card>
+                <section className="container px-4 py-24">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        viewport={{ once: true }}
+                        className="mx-auto mb-16 max-w-[800px] text-center"
+                    >
+                        <h2 className="mb-6 text-3xl font-bold md:text-4xl">Supported Protocols</h2>
+                        <p className="text-muted-foreground text-xl">
+                            Integrated with leading DEXs and cross-chain protocols for optimal trading experience.
+                        </p>
+                    </motion.div>
+                    <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+                        {Protocols.map((protocol, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                                viewport={{ once: true }}
+                                className="hover:bg-accent flex items-center justify-center rounded-lg bg-gray-100 p-6 transition-colors dark:bg-gray-700"
+                            >
+                                <div className='flex items-center justify-center gap-2'>
+                                    <Image src={protocol.image} height={30} width={30} alt={protocol.name} />
+                                    <span className="font-semibold">{protocol.name}</span>
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
-                </motion.section>
+                </section>
 
-                <motion.section
-                    className="py-20"
-                    initial="hidden"
-                    animate={isVisible ? "visible" : "hidden"}
-                    variants={fadeIn}
-                    transition={{ duration: 0.5, delay: 0.6 }}
-                >
-                    <h3 className="text-3xl font-bold mb-12 text-center">Supported DEXs</h3>
-                    <div className="flex flex-wrap justify-center gap-8">
-                        <DexLogo name="PancakeSwap V3" />
-                        <DexLogo name="Uniswap V3" />
-                        <DexLogo name="SushiSwap V3" />
-                        <DexLogo name="1inch" />
-                        <DexLogo name="Squid Router" />
-                    </div>
-                </motion.section>
-
-                <motion.section
-                    className="py-20 text-center"
-                    initial="hidden"
-                    animate={isVisible ? "visible" : "hidden"}
-                    variants={fadeIn}
-                    transition={{ duration: 0.5, delay: 0.8 }}
-                >
-                    <h3 className="text-3xl font-bold mb-6">Ready to Start Trading?</h3>
-                    <p className="text-xl mb-8 max-w-2xl mx-auto">
-                        Join the future of cross-chain trading with our advanced DEX aggregator.
-                    </p>
-                    <Button size="lg">
-                        Launch App
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                </motion.section>
+                <section className="container px-4 py-24">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        viewport={{ once: true }}
+                        className="text-center"
+                    >
+                        <h2 className="mb-12 text-3xl font-bold md:text-4xl">Ready to start trading?</h2>
+                        <Button size="lg" className="gap-2">
+                            Launch App <ArrowRight className="size-4" />
+                        </Button>
+                    </motion.div>
+                </section>
             </main>
 
-            <footer className="container mx-auto px-4 py-8 text-center">
-                <p>&copy; 2023 CrossChain DEX Aggregator. All rights reserved.</p>
+            <footer className="border-t">
+                <div className="container px-4 py-8">
+                    <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+                        <div className="flex items-center gap-2">
+                            <Wallet className="size-5" />
+                            <span className="font-semibold">TradeX</span>
+                        </div>
+                        <div className="flex gap-6">
+                            <Link href="https://twitter.com/abhish_3k" target='_blank' className="text-muted-foreground hover:text-foreground text-sm">
+                                <Twitter />
+                            </Link>
+                            <Link href="https://github.com/kamalbuilds/BNB-Trading-Aggregator" target='_blank' className="text-muted-foreground hover:text-foreground text-sm">
+                                <Github />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
             </footer>
-        </div>
-    )
-}
-
-function FeatureCard({ icon, title, description }) {
-    return (
-        <Card className="bg-gray-800">
-            <CardHeader>
-                <CardTitle className="flex flex-col items-center">
-                    {icon}
-                    {title}
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <CardDescription>{description}</CardDescription>
-            </CardContent>
-        </Card>
-    )
-}
-
-function DexLogo({ name }) {
-    return (
-        <div className="bg-gray-800 rounded-full p-4 flex items-center justify-center w-24 h-24">
-            <PanelTop className="h-12 w-12" />
-            <span className="sr-only">{name}</span>
         </div>
     )
 }
