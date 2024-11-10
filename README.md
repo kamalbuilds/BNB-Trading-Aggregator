@@ -1,4 +1,4 @@
-# CrossChain DEX Aggregator & Strategy Builder
+# TradeX : CrossChain DEX Aggregator & Strategy Builder
 > Building, Executing, and Sharing Cross-Chain Trading Strategies Made Simple
 
 This project is designed to enable users to create and execute complex blockchain actions seamlessly. It supports various decentralized exchanges (DEXs), cross-chain operations, and advanced storage management, ensuring smooth and efficient strategy execution.
