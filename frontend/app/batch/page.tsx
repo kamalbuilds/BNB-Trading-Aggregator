@@ -254,58 +254,57 @@ export default function BatchComponent() {
   const [strategyName, setStrategyName] = useState('')
 
   const [savingStrategy, setSavingStrategy] = useState(false);
+
+
   const handleSaveStrategy = async () => {
-    if (!activeAccount || strategyName || !wallet) return;
+    console.log(activeAccount, strategyName, wallet)
+    if (!activeAccount || !strategyName || !wallet) return;
 
     setSavingStrategy(true);
     try {
-      if (chainId !== greenfieldTestnet.id) {
-        await wallet.switchChain(greenfieldTestnet)
-      }
+        if (chainId !== greenfieldTestnet.id) {
+            await wallet.switchChain(greenfieldTestnet);
+        }
 
-      const isBucketAvailable = await checkIfBucketExists({
-        bucketName: activeAccount.address.toLowerCase()
-      })
+        const bucketName = activeAccount.address.toLowerCase();
+        const isBucketAvailable = await checkIfBucketExists({
+            bucketName: bucketName
+        });
 
-      console.log("isBucketAvailable", isBucketAvailable);
+        if (!isBucketAvailable) {
+            await handleCreateGreenFieldBucket({
+                address: activeAccount.address,
+                bucketName: bucketName,
+                activeAccount,
+                wallet
+            });
+        }
 
-      const strategyData = [...blocks]
-      console.log("save strategy", strategyData);
+        const strategyData = [...blocks];
+        const jsonString = JSON.stringify(strategyData);
+        const jsonBlob = new Blob([jsonString], { type: "application/json" });
+        const timestamp = new Date().getTime();
+        const fileName = `${strategyName}-${timestamp}.json`;
+        const jsonFile = new File([jsonBlob], fileName, { type: "application/json" });
 
-      if (!isBucketAvailable) {
-        const bucketCreated = await handleCreateGreenFieldBucket({
-          address: activeAccount.address,
-          bucketName: activeAccount.address,
-          activeAccount,
-        })
+        await handleCreateGreenFieldObject({
+            address: activeAccount.address,
+            bucketName: bucketName,
+            jsonFile: jsonFile,
+            strategyName: fileName,
+            activeAccount
+        });
 
-        console.log("bucketCreated", bucketCreated);
-      }
-
-      const jsonString = JSON.stringify(strategyData);
-      const jsonBlob = new Blob([jsonString], { type: "application/json" });
-
-      const timestamp = new Date().getTime();
-      console.log("Date", timestamp)
-
-      const jsonFile = new File([jsonBlob], `${strategyName}-${timestamp}.json`, { type: "application/json" });
-
-      const strategyCreated = await handleCreateGreenFieldObject({
-        address: activeAccount.address,
-        bucketName: activeAccount.address,
-        jsonFile: jsonFile,
-        strategyName: strategyName
-      })
-
-      setSavingStrategy(false)
-      setBlocks([])
-      console.log("strategyCreated", strategyCreated);
-
+        alert('Strategy saved successfully!');
+        setBlocks([]);
+        setStrategyName('');
     } catch (error) {
-      console.log("Error in saving strategy", error)
-      setSavingStrategy(false)
+        console.error("Error saving strategy:", error);
+        alert('Failed to save strategy. Please try again.');
+    } finally {
+        setSavingStrategy(false);
     }
-  }
+  };
 
   return (
     <div className="container mx-auto p-4">
