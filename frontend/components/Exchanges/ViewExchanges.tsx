@@ -25,7 +25,7 @@ const ViewExchanges = ({
   console.log("Exchanges>>>", exchanges)
 
   return (
-    <div className="min-h-20">
+    <div className="min-h-20 w-full">
       <Table>
         <TableHeader>
           <TableRow>

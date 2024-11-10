@@ -2,9 +2,7 @@ import { StaticImageData } from "next/image"
 import bnbImg from "@/public/images/BNB_image.webp"
 import busdImg from "@/public/images/BUSD_image.webp"
 import daiImg from "@/public/images/dai.png"
-// Import token images
 import ethImg from "@/public/images/eth.png"
-// import wbtcImg from "@/public/images/wbtc.png"
 import linkImg from "@/public/images/link.png"
 import pancake from "@/public/images/pancake_logo.webp"
 import uniImg from "@/public/images/uni.jpg"
@@ -59,10 +57,10 @@ export const tokens: Record<string, IToken[]> = {
   ],
   "BSC Mainnet": [
     {
-      image: bnbImg,
-      name: "WBNB",
+      image: busdImg,
+      name: "BUSD",
       decimals: 18,
-      address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+      address: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
     },
     {
       image: pancake,
@@ -71,10 +69,10 @@ export const tokens: Record<string, IToken[]> = {
       address: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
     },
     {
-      image: busdImg,
-      name: "BUSD",
+      image: bnbImg,
+      name: "WBNB",
       decimals: 18,
-      address: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+      address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
     },
     {
       image: usdcImg,

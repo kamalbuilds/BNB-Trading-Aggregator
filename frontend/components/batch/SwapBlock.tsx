@@ -44,7 +44,7 @@ const SwapBlock = () => {
         return "BSC Mainnet"
         break
       default:
-        return "Ethereum Mainnet"
+        return "BSC Mainnet"
         break
     }
   }, [chainId])
@@ -52,7 +52,7 @@ const SwapBlock = () => {
   console.log("Block Action", block)
   const [loadingTokens, setLoadingTokens] = React.useState(true)
   const [fetchedTokens, setFetchedTokens] = React.useState<IToken[]>(
-    tokens["Ethereum Mainnet"]
+    tokens["BSC Mainnet"]
   )
 
   React.useEffect(() => {
@@ -149,7 +149,7 @@ const SwapBlock = () => {
       console.log("isApproved", isApproved)
 
       if (!isApproved) {
-        console.log(contract,"contract")
+        console.log(contract, "contract")
         const amountWithDecimals = ethers.parseUnits(amount, swapFrom.decimals)
         const tx = await contract.approve(routerAddress, amountWithDecimals)
         console.log("Tx", tx);
@@ -171,7 +171,7 @@ const SwapBlock = () => {
     }
   }
 
-  const [destinationChain, setDestinationChain] = useState<number>(1) // Default to Ethereum
+  const [destinationChain, setDestinationChain] = useState<number>(1)
   const { tokens: sourceTokens, isLoading: loadingSourceTokens } = use1InchTokens(chainId)
   const { tokens: destTokens, isLoading: loadingDestTokens } = use1InchTokens(destinationChain)
 
@@ -220,7 +220,6 @@ const SwapBlock = () => {
             <SelectItem value="1">Ethereum</SelectItem>
             <SelectItem value="56">BSC</SelectItem>
             <SelectItem value="137">Polygon</SelectItem>
-            {/* Add more chains as needed */}
           </SelectContent>
         </Select>
       </div>

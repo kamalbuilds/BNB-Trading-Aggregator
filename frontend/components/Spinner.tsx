@@ -2,7 +2,7 @@ import React from 'react';
 import { PacmanLoader } from 'react-spinners'
 const Spinner = () => {
     return (
-        <PacmanLoader />
+        <PacmanLoader color='#3e04ff' />
     );
 };
 

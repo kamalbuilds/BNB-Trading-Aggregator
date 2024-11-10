@@ -3,10 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query"
 import { ethers } from "ethers"
 import { tokens } from "@/config/tokens"
 import { useWeb3 } from "./use-web3"
-import IRouter from "@/lib/artifacts/IUniswapV2Router02.json"
-import ISwapRouter from "@/lib/artifacts/ISwapRouter.json"
-import ERC20 from "@/lib/artifacts/IERC20.json"
-import qs from "qs"
+import { exchanges } from "@/lib/helpers"
 
 export function useTokenSwap() {
   const { web3Data } = useWeb3()
@@ -30,7 +27,7 @@ export function useTokenSwap() {
       const path = [_tokenIn, _tokenOut]
 
       const amount_in = ethers.parseEther(amountIn)
-      
+
       // Get prices from exchanges
       const prices = await Promise.all(
         exchanges[currentNet].map(async (e) => {
@@ -86,12 +83,12 @@ export function useTokenSwap() {
   const swapMutation = useMutation({
     mutationFn: async () => {
       if (!priceData?.bestExchange || !amountIn) throw new Error("Invalid swap parameters")
-      
+
       const provider = new ethers.BrowserProvider(window.ethereum)
       const signer = provider.getSigner()
-      
-      // Reference original swap function
-      ```typescript:front-end/src/components/Swap.js
+
+        // Reference original swap function
+        ```typescript:front-end/src/components/Swap.js
       startLine: 123
       endLine: 197
       ```

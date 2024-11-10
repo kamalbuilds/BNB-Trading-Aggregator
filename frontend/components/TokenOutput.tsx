@@ -30,7 +30,7 @@ const TokenOutput = ({
         return "BSC Mainnet"
         break
       default:
-        return "Ethereum Mainnet"
+        return "BSC Mainnet"
         break
     }
   }, [chainId])

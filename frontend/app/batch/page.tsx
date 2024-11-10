@@ -32,6 +32,7 @@ import { checkIfBucketExists, handleCreateGreenFieldBucket, handleCreateGreenFie
 import { greenfieldTestnet } from "@/utils/chain.utils"
 import Spinner from "@/components/Spinner"
 import { useAccount } from "wagmi"
+import { useRouter } from "next/navigation"
 
 const defiActions = ["Swap", "Add Liquidity", "Remove Liquidity", "1inch Cross Chain Swap", "Squid Router"]
 
@@ -54,6 +55,7 @@ export default function BatchComponent() {
   console.log("Connector >>>", connector);
   console.log("chainId >>>", chainId);
 
+  const router = useRouter();
   const wallet = useActiveWallet();
 
   const currentNet = useMemo(() => {
@@ -64,11 +66,8 @@ export default function BatchComponent() {
       case 56:
         return "BSC Mainnet"
         break
-      case 5600:
-        return "GreenField Testnet"
-        break
       default:
-        return "Ethereum Mainnet"
+        return "BSC Mainnett"
         break
     }
   }, [chainId]);
@@ -304,6 +303,7 @@ export default function BatchComponent() {
       alert('Strategy saved successfully!');
       setBlocks([]);
       setStrategyName('');
+      router.push('/your-strategy')
     } catch (error) {
       console.error("Error saving strategy:", error);
       alert('Failed to save strategy. Please try again.');
@@ -330,10 +330,10 @@ export default function BatchComponent() {
         </Button>
 
         <div className="flex flex-row gap-4">
-          <Input type="text" placeholder="Enter Strategy name" onChange={(e) => {
+          <Input className="min-w-60" type="text" placeholder="Enter Strategy name" onChange={(e) => {
             setStrategyName(e.target.value)
           }} />
-          <Button onClick={handleSaveStrategy} disabled={blocks.length === 0}>
+          <Button className="w-full" onClick={handleSaveStrategy} disabled={blocks.length === 0}>
             Save Strategy
           </Button>
 
