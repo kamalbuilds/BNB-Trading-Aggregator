@@ -1,6 +1,8 @@
 # CrossChain DEX Aggregator & Strategy Builder
 > Building, Executing, and Sharing Cross-Chain Trading Strategies Made Simple
 
+This project is designed to enable users to create and execute complex blockchain actions seamlessly. It supports various decentralized exchanges (DEXs), cross-chain operations, and advanced storage management, ensuring smooth and efficient strategy execution.
+
 ## 🌟 Problem Statements
 
 1. **Fragmented Liquidity**: Users struggle to find the best rates across multiple DEXs and chains, leading to suboptimal trades and higher costs.
@@ -25,6 +27,10 @@
    - Visual strategy builder interface
    - BNB Greenfield integration for strategy storage
    - Strategy sharing and future monetization capabilities
+
+# Objectives: 
+
+The goal is to simplify the user experience on BNBChain by offering one-click bridging and trading capabilities. This will allow users to own and manage their assets across different chains while easily trading on BNBChain, ensuring the lowest fees, best prices, and additional services such as MEV protection. This comprehensive approach aims to enhance convenience and efficiency for all users within the BNBChain ecosystem.
 
 ## 🚀 Key Features
 
@@ -60,22 +66,80 @@
 ### Strategy Creation Flow
 ```mermaid
 graph TD
-A[User Interface] --> B[Strategy Builder]
-B --> C[Block Components]
-C --> D[Action Types]
-D --> E1[Swaps]
-D --> E2[LP Management]
-E2 --> E3[Add Liquidity]
-E2 --> E4[Remove Liquidity]
-D --> E3[Cross-chain Swaps]
-D --> E5[CrossChain NFT Purchase]
-D --> E6[Bridging]
-E5 --> E7[Seraph NFT Purchase]
-B --> F[BNB Greenfield]
-F --> G[Strategy Storage]
-G --> H[Contract Interactions]
-G --> I[Profile Page]
+    A[User Interface] --> B[Strategy Builder]
+    B --> C[Block Components]
+    
+    C --> D[Action Types]
+    
+    %% DEX Swaps
+    D --> E1[DEX Swaps]
+    E1 --> E1a[PancakeSwap V3]
+    E1 --> E1b[Uniswap V3]
+    E1 --> E1c[SushiSwap V3]
+    
+    %% Cross-Chain Operations
+    D --> E2[Cross-Chain Operations]
+    E2 --> E2a[1inch Fusion+]
+    E2 --> E2b[Squid Router]
+    E2 --> E2c[MEV Protection]
+    
+    %% Liquidity Management
+    D --> E3[Liquidity Management]
+    E3 --> E3a[Add Liquidity]
+    E3 --> E3b[Remove Liquidity]
+    E3 --> E3c[Position Management]
+    
+    %% NFT Operations
+    D --> E4[NFT Operations]
+    E4 --> E4a[Seraph NFT Purchase]
+    E4 --> E4b[Cross-Chain Settlement]
+    E4 --> E4c[Price Discovery]
+    
+    %% Strategy Storage
+    B --> F[Strategy Storage]
+    F --> F1[BNB Greenfield]
+    F1 --> F1a[Create Bucket]
+    F1a --> F1b[Store Strategy JSON]
+    F1b --> F1c[Retrieve Strategy]
+    
+    %% Execution Flow
+    B --> G[Strategy Execution]
+    G --> G1[Validation]
+    G1 --> G2[Gas Optimization]
+    G2 --> G3[Sequential Execution]
+    G3 --> G4[Transaction Monitoring]
+    
+    %% Profile & Sharing
+    F --> H[Profile Dashboard]
+    H --> H1[Strategy Management]
+    H --> H2[Sharing Capabilities]
+    H --> H3[Future Monetization]
 ```
+
+## Flow Explaination
+
+#### 1. Action Initiation
+- **User-Created Blocks**: Users can construct blocks representing different types of actions.
+- **Custom Parameters and Validation**: Each block type has tailored parameters and built-in validation mechanisms.
+- **Multi-DEX and Cross-Chain Support**: The system is compatible with multiple DEXs and cross-chain protocols, enhancing versatility.
+
+#### 2. Cross-Chain Operations
+- **Integrated Squid Router**: Ensures optimal routing for cross-chain transactions.
+- **1inch Fusion+ for Atomic Swaps**: Supports secure, atomic swaps across chains.
+- **MEV Protection**: Implements strategies to mitigate front-running and ensure fair execution.
+- **NFT Purchases Across Chains**: Manages and facilitates cross-chain NFT buying.
+
+#### 3. Storage Management
+- **Personal Bucket Creation**: Users can create individual storage buckets on BNB Greenfield.
+- **JSON-Based Strategy Storage**: Strategies are stored as JSON files for easy access and management.
+- **Retrieval and Sharing**: Provides robust mechanisms for retrieving and sharing stored strategies.
+
+#### 4. Strategy Execution
+- **Parameter Validation**: Ensures all parameters are checked and validated before execution.
+- **Gas Optimization**: Includes gas-saving techniques to minimize transaction costs.
+- **Sequential Transaction Handling**: Executes transactions in a precise order for reliability.
+- **Transaction Monitoring**: Actively tracks the status of transactions to ensure successful completion.
+
 
 ## 💼 Use Cases
 
@@ -106,6 +170,7 @@ G --> I[Profile Page]
   - Uniswap V3
   - SushiSwap V3
 
+
 - **Storage Solution**:
   - BNB Greenfield for strategy storage
   - Decentralized strategy sharing
@@ -115,7 +180,7 @@ G --> I[Profile Page]
 - MEV Protection
 - Slippage Control
 - Cross-chain Transaction Security
-- Smart Contract Auditing
+- Audited Smart Contracts
 
 ## 🚀 Future Roadmap
 
@@ -124,31 +189,3 @@ G --> I[Profile Page]
 3. Mobile Application
 4. Social Trading Features
 5. Strategy Performance Tracking
-
-## 📚 Documentation
-
-For detailed documentation and guides, please visit our [Wiki](docs/wiki).
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-
-
-## Todo: 
-
-1. PancakeSwap V3 , Uniswap V3 , SushiSwap V3
-2. 1inch done
-3. squid router done
-
-# Objectives: 
-
-The goal is to simplify the user experience on BNBChain by offering one-click bridging and trading capabilities. This will allow users to own and manage their assets across different chains while easily trading on BNBChain, ensuring the lowest fees, best prices, and additional services such as MEV protection. This comprehensive approach aims to enhance convenience and efficiency for all users within the BNBChain ecosystem.
-
-### Description: 
-
-This trading aggregator will be expertly designed to streamline the trading experience by consolidating liquidity from multiple sources. By aggregating liquidity from various DEXs and perps, the trading aggregator ensures users get the best possible prices for their trades, minimizing slippage and price impact. Key features will include:
-
-- Aggregator for DEXs and Perps: Aggregates liquidity from numerous sources to offer the best price routes, token selection, and user interface/experience.
-
-- Cross-Chain Liquidity: Integrates with top cross-chain projects to provide the best prices and paths for different tokens and blockchains, ensuring that liquidity bridging into BNBChain can be traded easily with optimal prices and user experience.
