@@ -1,6 +1,6 @@
 import { ChainType } from "@0xsquid/squid-types"
 
-export type SquidActionType = 'swap' | 'bridge' | 'lend' | 'repay'
+export type SquidActionType = 'swap' | 'bridge' | 'lend' | 'repay' | 'borrow' | 'buyseraph'
 
 export interface SquidBlockData {
   fromChain: string

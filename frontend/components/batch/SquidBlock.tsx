@@ -7,6 +7,7 @@ import { ActionSelect } from "./squid/ActionSelect"
 import { Button } from "@/components/ui/button"
 import { useActiveAccount } from "thirdweb/react"
 import { encodeLendingData } from "@/utils/lending"
+import { SeraphPurchaseAction } from "./squid/SeraphPurchaseAction"
 
 const SquidBlock = () => {
   const context = useContext(BlockContext)
@@ -48,6 +49,17 @@ const SquidBlock = () => {
     }
   }
 
+  const renderAction = () => {
+    switch (block.type) {
+      case "swap":
+        return <SquidSwap block={block} updateBlockField={updateBlockField} />
+      case "buyseraph":
+        return <SeraphPurchaseAction block={block} updateBlockField={updateBlockField} />
+      default:
+        return null
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <ActionSelect
@@ -55,13 +67,7 @@ const SquidBlock = () => {
         onChange={(value) => updateBlockField(block.id, { actionType: value })}
       />
 
-      {block.actionType === "swap" && (
-        <SquidSwap block={block} updateBlockField={updateBlockField} />
-      )}
-      
-      {block.actionType === "lend" && (
-        <SquidLend block={block} updateBlockField={updateBlockField} />
-      )}
+      {renderAction()}
 
       <Button 
         onClick={handleSquidAction}

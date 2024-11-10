@@ -23,6 +23,8 @@ import {
           <SelectItem value="bridge">Bridge</SelectItem>
           <SelectItem value="lend">Lend</SelectItem>
           <SelectItem value="repay">Repay</SelectItem>
+          <SelectItem value="borrow">Borrow</SelectItem>
+          <SelectItem value="buyseraph">Buy Seraph NFTs</SelectItem>
         </SelectContent>
       </Select>
     )
