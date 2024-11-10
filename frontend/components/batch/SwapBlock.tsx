@@ -15,7 +15,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { client } from "@/components/client";
-import ViewExchanges from "@/components/exchanges/viewexchanges"
 import TokenOutput from "../TokenOutput"
 import { executePancakeSwap } from "../pancakeswap/pancakeswap"
 import { Button } from "../ui/button"
@@ -25,6 +24,7 @@ import { ERC20ABI } from "@/config/ERC20Abi"
 import { Contract, ethers } from "ethers"
 import { ethers6Adapter } from "thirdweb/adapters/ethers6";
 import { handleCheckApprove } from "@/helpers/checkApprove"
+import ViewExchanges from "../Exchanges/ViewExchanges"
 
 const SwapBlock = () => {
   const context = useContext(BlockContext)
