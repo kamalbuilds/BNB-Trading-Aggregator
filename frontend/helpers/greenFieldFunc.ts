@@ -10,10 +10,12 @@ export const handleCreateGreenFieldBucket = async ({
     address,
     bucketName,
     activeAccount,
+    connector,
 }: {
     address: string
     bucketName: string
     activeAccount: any
+    connector: any
 }) => {
     const spInfo = await selectSp();
     console.log('spInfo', spInfo);
@@ -25,18 +27,13 @@ export const handleCreateGreenFieldBucket = async ({
     });
 
     //TODO issue to be fixed
-    const ethersprovider = await ethers6Adapter.provider.toEthers({
-        chain: bsc,
-        client: client
-    })
-    // const provider = new ethers.BrowserProvider(window.ethereum)
-    // const signer = await provider.getSigner();
-    console.log("Provider rpc", ethersprovider);
-                const offChainData = await getOffchainAuthKeys(address, ethersprovider);
-                if (!offChainData) {
-                    alert('No offchain, please create offchain pairs first');
-                    return;
-                }
+    const provider = await connector?.getProvider();
+    console.log("Provider >>", provider);
+    const offChainData = await getOffchainAuthKeys(address, provider);
+    if (!offChainData) {
+        alert('No offchain, please create offchain pairs first');
+        return;
+    }
 
     try {
         const createBucketTx = await greenFieldClient.bucket.createBucket(
@@ -87,12 +84,13 @@ export const handleCreateGreenFieldObject = async ({
     jsonFile,
     bucketName,
     strategyName,
+    connector
 }: {
     address: string
     jsonFile: File,
     bucketName: string,
     strategyName: string
-
+    connector: any
 }) => {
     if (!address) return;
 
@@ -101,7 +99,8 @@ export const handleCreateGreenFieldObject = async ({
     const spInfo = await selectSp();
     console.log('spInfo', spInfo);
 
-    const provider = new ethers.BrowserProvider(window.ethereum)
+    const provider = await connector?.getProvider();
+    console.log("Provider >>", provider);
     const offChainData = await getOffchainAuthKeys(address, provider);
     if (!offChainData) {
         alert('No offchain, please create offchain pairs first');

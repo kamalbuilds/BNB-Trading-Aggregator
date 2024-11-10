@@ -10,11 +10,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { useState } from "react"
-import { client } from "@/components/client";
-
-import { ConnectButton } from "thirdweb/react";
-import { bsc, mainnet, sepolia } from 'thirdweb/chains'
-import { greenfieldTestnet } from "@/utils/chain.utils"
 import WalletConnect from "./WalletConnect"
 
 export function Account() {

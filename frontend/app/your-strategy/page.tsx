@@ -48,7 +48,7 @@ import AddressLabel from "@/components/AddressLabel"
 import TimestampToDate from "@/components/TimeStamp"
 import Spinner from '@/components/Spinner'
 import WalletConnect from "@/components/WalletConnect"
-
+import { useAccount } from 'wagmi';
 interface Bucket {
     id: string
     name: string
@@ -74,6 +74,8 @@ export default function YourStrategyPage() {
     const [strategyList, setStrategyLists] = useState<
         SpResponse<ListObjectsByBucketNameResponse> | any[]
     >([])
+
+    const { connector } = useAccount();
 
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -163,33 +165,33 @@ export default function YourStrategyPage() {
             const spInfo = await selectSp()
             console.log("spInfo", spInfo)
 
-            // TODO: @kamal func for download
-            // const provider = await connector?.getProvider();
-            // const accounts = await provider.send('eth_requestAccounts',[]);
-            // const offChainData = await getOffchainAuthKeys(activeAccount.address, provider);
-            // if (!offChainData) {
-            //   alert('No offchain, please create offchain pairs first');
-            //   return;
-            // }
+            const provider = await connector?.getProvider();
+            const offChainData = await getOffchainAuthKeys(activeAccount.address, provider);
+            if (!offChainData) {
+                alert('No offchain, please create offchain pairs first');
+                return;
+            }
 
-            // const res = await greenFieldClient.object.downloadFile(
-            //   {
-            //     bucketName: activeAccount.address,
-            //     objectName,
-            //   },
-            //   {
-            //     type: 'EDDSA',
-            //     address:activeAccount.address,
-            //     domain: window.location.origin,
-            //     seed: offChainData.seedString,
-            //   },
-            // );
+            const res = await greenFieldClient.object.downloadFile(
+                {
+                    bucketName: activeAccount.address,
+                    objectName,
+                },
+                {
+                    type: 'EDDSA',
+                    address: activeAccount.address,
+                    domain: window.location.origin,
+                    seed: offChainData.seedString,
+                },
+            );
 
             // console.log(res);
         } catch (error) {
             console.log("Error", error)
         }
     }
+
+
 
     return (
         <div className="flex min-h-screen flex-col space-y-6 p-8">

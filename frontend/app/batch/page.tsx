@@ -31,6 +31,7 @@ import { usePancakeswapLiquidity } from "@/hooks/use-pancakeswap-liquidity"
 import { checkIfBucketExists, handleCreateGreenFieldBucket, handleCreateGreenFieldObject } from "@/helpers/greenFieldFunc"
 import { greenfieldTestnet } from "@/utils/chain.utils"
 import Spinner from "@/components/Spinner"
+import { useAccount } from "wagmi"
 
 const defiActions = ["Swap", "Add Liquidity", "Remove Liquidity", "1inch Cross Chain Swap", "Squid Router"]
 
@@ -49,6 +50,10 @@ export default function BatchComponent() {
   const activeWalletChain = useActiveWalletChain()
   const chainId = activeWalletChain?.id
 
+  const { connector } = useAccount();
+  console.log("Connector >>>", connector);
+  console.log("chainId >>>", chainId);
+
   const wallet = useActiveWallet();
 
   const currentNet = useMemo(() => {
@@ -58,6 +63,9 @@ export default function BatchComponent() {
         break
       case 56:
         return "BSC Mainnet"
+        break
+      case 5600:
+        return "GreenField Testnet"
         break
       default:
         return "Ethereum Mainnet"
@@ -250,9 +258,7 @@ export default function BatchComponent() {
     setBlocks(blocks.slice(0, -1))
   }
 
-  console.log("active account", activeAccount);
   const [strategyName, setStrategyName] = useState('')
-
   const [savingStrategy, setSavingStrategy] = useState(false);
 
 
@@ -262,47 +268,47 @@ export default function BatchComponent() {
 
     setSavingStrategy(true);
     try {
-        if (chainId !== greenfieldTestnet.id) {
-            await wallet.switchChain(greenfieldTestnet);
-        }
+      if (chainId !== greenfieldTestnet.id) {
+        await wallet.switchChain(greenfieldTestnet);
+      }
 
-        const bucketName = activeAccount.address.toLowerCase();
-        const isBucketAvailable = await checkIfBucketExists({
-            bucketName: bucketName
+      const bucketName = activeAccount.address.toLowerCase();
+      const isBucketAvailable = await checkIfBucketExists({
+        bucketName: bucketName
+      });
+
+      if (!isBucketAvailable) {
+        await handleCreateGreenFieldBucket({
+          address: activeAccount.address,
+          bucketName: bucketName,
+          activeAccount,
+          connector,
         });
+      }
 
-        if (!isBucketAvailable) {
-            await handleCreateGreenFieldBucket({
-                address: activeAccount.address,
-                bucketName: bucketName,
-                activeAccount,
-                wallet
-            });
-        }
+      const strategyData = [...blocks];
+      const jsonString = JSON.stringify(strategyData);
+      const jsonBlob = new Blob([jsonString], { type: "application/json" });
+      const timestamp = new Date().getTime();
+      const fileName = `${strategyName}-${timestamp}.json`;
+      const jsonFile = new File([jsonBlob], fileName, { type: "application/json" });
 
-        const strategyData = [...blocks];
-        const jsonString = JSON.stringify(strategyData);
-        const jsonBlob = new Blob([jsonString], { type: "application/json" });
-        const timestamp = new Date().getTime();
-        const fileName = `${strategyName}-${timestamp}.json`;
-        const jsonFile = new File([jsonBlob], fileName, { type: "application/json" });
+      await handleCreateGreenFieldObject({
+        address: activeAccount.address,
+        bucketName: bucketName,
+        jsonFile: jsonFile,
+        strategyName: fileName,
+        connector
+      });
 
-        await handleCreateGreenFieldObject({
-            address: activeAccount.address,
-            bucketName: bucketName,
-            jsonFile: jsonFile,
-            strategyName: fileName,
-            activeAccount
-        });
-
-        alert('Strategy saved successfully!');
-        setBlocks([]);
-        setStrategyName('');
+      alert('Strategy saved successfully!');
+      setBlocks([]);
+      setStrategyName('');
     } catch (error) {
-        console.error("Error saving strategy:", error);
-        alert('Failed to save strategy. Please try again.');
+      console.error("Error saving strategy:", error);
+      alert('Failed to save strategy. Please try again.');
     } finally {
-        setSavingStrategy(false);
+      setSavingStrategy(false);
     }
   };
 

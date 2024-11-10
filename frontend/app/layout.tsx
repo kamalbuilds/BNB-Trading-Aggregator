@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils"
 import { QueryProvider } from "@/components/providers/query-provider"
 import { SiteHeader } from "@/components/site-header"
 import { ThirdwebProvider } from "thirdweb/react";
+import { WagmiProvider, createConfig } from "wagmi";
+import { wagmiConfig } from "@/config/wagmi.config"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,14 +25,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn("min-h-screen bg-background antialiased", inter.className)}>
+        <WagmiProvider config={wagmiConfig}>
           <ThirdwebProvider>
-          <QueryProvider>
-            <div className="relative flex min-h-screen flex-col">
-              <SiteHeader />
-              <div className="flex-1">{children}</div>
-            </div>
-          </QueryProvider>
+            <QueryProvider>
+              <div className="relative flex min-h-screen flex-col">
+                <SiteHeader />
+                <div className="flex-1">{children}</div>
+              </div>
+            </QueryProvider>
           </ThirdwebProvider>
+        </WagmiProvider>
       </body>
     </html>
   )
