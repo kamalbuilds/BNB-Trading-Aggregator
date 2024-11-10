@@ -267,9 +267,6 @@ export default function BatchComponent() {
 
     setSavingStrategy(true);
     try {
-      if (chainId !== greenfieldTestnet.id) {
-        await wallet.switchChain(greenfieldTestnet);
-      }
 
       const bucketName = activeAccount.address.toLowerCase();
       const isBucketAvailable = await checkIfBucketExists({
